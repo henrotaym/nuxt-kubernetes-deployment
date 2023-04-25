@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      target: runner
+    volumes:
+      - ./:/app
+    ports:
+      - ${VITE_PORT:-8000}:${VITE_PORT:-8000}
