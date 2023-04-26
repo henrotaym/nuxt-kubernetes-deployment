@@ -42,7 +42,13 @@ const valuesMapping = commandArgs.reduce((valuesMapping, commandArg) => {
 const environment = valuesMapping["--env"] || "production";
 
 const currentPath = resolve(process.cwd());
-const stubsPath = resolve(currentPath, "stubs");
+
+const stubsPath = resolve(
+  currentPath,
+  "node_modules",
+  "@henrotaym/nuxt-kubernetes-deployment",
+  "stubs"
+);
 const devopsPath = resolve(currentPath, "devops");
 const environmentDevopsPath = resolve(devopsPath, environment);
 
@@ -62,7 +68,6 @@ const generateEnvironmentDevops = (
 
   elements.forEach((element) => {
     const elementStubPath = resolve(currentStubPath, element);
-    console.log(elementStubPath);
     const elementDevopsPath = resolve(
       currentDevopsPath,
       element.replace(".stub", "")
