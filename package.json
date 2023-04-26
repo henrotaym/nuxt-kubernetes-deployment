@@ -1,13 +1,13 @@
 {
-  "name": "@henrotaym/vue-3-typescript-package-boilerplate",
+  "name": "@henrotaym/nuxt-kubernetes-deployment",
   "description": "Boilerplate to start a vue 3 package easily.",
   "private": false,
   "license": "MIT",
-  "version": "0.0.12",
+  "version": "0.0.1",
   "type": "module",
   "files": [
     "dist",
-    ""
+    "stubs"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -18,7 +18,7 @@
     }
   },
   "bin": {
-    "testatostos": "./bin/testing"
+    "devops": "./bin/devops.js"
   },
   "types": "dist/index.d.ts",
   "scripts": {
