@@ -6,7 +6,8 @@
   "version": "0.0.12",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    ""
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -16,8 +17,12 @@
       "require": "./dist/index.cjs"
     }
   },
+  "bin": {
+    "testatostos": "./bin/testing"
+  },
   "types": "dist/index.d.ts",
   "scripts": {
+    "testatos": "./bin/testing",
     "dev": "vite",
     "build:vite": "vite build",
     "ts": "vue-tsc",

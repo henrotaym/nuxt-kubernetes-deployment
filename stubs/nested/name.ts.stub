@@ -1,0 +1,2 @@
+const {MODULE_VARIABLE} = {MODULE_NAME};
+export default {MODULE_VARIABLE}

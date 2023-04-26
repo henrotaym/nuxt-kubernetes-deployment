@@ -16,6 +16,11 @@ if [ "$1" == "stop" ]
         ./stop
 fi
 
+if [ "$1" == "restart" ]
+    then 
+        ./restart
+fi
+
 if [ "$1" == "version" ]
     then 
         ./version $2
