@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: app
+  name: nuxt-in-kubernetes
+data:
+  EXAMPLE_PUBLIC_VALUE: "test"

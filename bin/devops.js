@@ -8,7 +8,6 @@ import {
   readdirSync,
   writeFileSync,
   lstatSync,
-  rmSync,
 } from "fs";
 import { resolve } from "path";
 import { argv } from "process";
@@ -22,14 +21,14 @@ const trying = (expected) => {
 };
 
 const parametersMapping = {
-  "--key": "{MODULE_NAME}",
-  "--variable": "{MODULE_VARIABLE}",
-  "--env": "{MODULE_ENVIRONMENT}",
+  "--key": "{APP_KEY}",
+  "--cloudflare-key": "{CLOUDFLARE_API_KEY}",
+  "--env": "{APP_ENV}",
 };
 
 const commandParameterNames = Object.keys(parametersMapping);
 
-const [, , ...commandArgs] = argv;
+const [, , commandName, ...commandArgs] = argv;
 
 const valuesMapping = commandArgs.reduce((valuesMapping, commandArg) => {
   const [key, value] = commandArg.split("=");
@@ -49,51 +48,86 @@ const stubsPath = resolve(
   "@henrotaym/nuxt-kubernetes-deployment",
   "stubs"
 );
-const devopsPath = resolve(currentPath, "devops");
-const environmentDevopsPath = resolve(devopsPath, environment);
 
-const resetDevopsFolder = () => {
-  const [, isExisting] = trying(() => lstatSync(devopsPath).isDirectory());
-  if (!isExisting) return mkdirSync(devopsPath);
-  trying(() => rmSync(environmentDevopsPath, { recursive: true, force: true }));
+const makeSureFolderExist = (path) => {
+  const [, isExisting] = trying(() => lstatSync(path).isDirectory());
+  if (!isExisting) return mkdirSync(path);
 };
 
-const generateEnvironmentDevops = (
-  currentStubPath = stubsPath,
-  currentDevopsPath = environmentDevopsPath
-) => {
+const resolveOrCreate = (...paths) => {
+  const [firstPath, ...newPaths] = paths;
+  makeSureFolderExist(firstPath);
+  if (paths.length === 1) return resolve(firstPath);
+  newPaths[0] = resolve(firstPath, newPaths[0]);
+  resolveOrCreate(newPaths);
+};
+
+const replaceFileContent = (stubPath, realPath) => {
+  const content = readFileSync(stubPath, {
+    encoding: "utf8",
+    flag: "r",
+  });
+
+  const replacedContent = commandParameterNames.reduce(
+    (replacedContent, parameter) => {
+      const { [parameter]: value } = valuesMapping;
+      if (!value) return replacedContent;
+      const { [parameter]: key } = parametersMapping;
+      return replacedContent.replace(new RegExp(key, "g"), value);
+    },
+    content
+  );
+
+  writeFileSync(realPath, replacedContent);
+};
+
+const generateFilesRecursively = (currentStubPath, currentRealPath) => {
+  const [, isFile] = trying(() => lstatSync(currentStubPath).isFile());
+
+  if (isFile) return replaceFileContent(currentStubPath, currentRealPath);
+
   const elements = readdirSync(currentStubPath);
   if (!elements.length) return;
-  mkdirSync(currentDevopsPath);
 
   elements.forEach((element) => {
     const elementStubPath = resolve(currentStubPath, element);
-    const elementDevopsPath = resolve(
-      currentDevopsPath,
-      element.replace(".stub", "")
-    );
-    const isDirectory = lstatSync(elementStubPath).isDirectory();
-    if (isDirectory)
-      return generateEnvironmentDevops(elementStubPath, elementDevopsPath);
-
-    const content = readFileSync(elementStubPath, {
-      encoding: "utf8",
-      flag: "r",
-    });
-
-    const replacedContent = commandParameterNames.reduce(
-      (replacedContent, parameter) => {
-        const { [parameter]: value } = valuesMapping;
-        if (!value) return replacedContent;
-        const { [parameter]: key } = parametersMapping;
-        return replacedContent.replace(new RegExp(key, "g"), value);
-      },
-      content
-    );
-
-    writeFileSync(elementDevopsPath, replacedContent);
+    const elementRealPath = resolve(currentRealPath, element);
+    generateFilesRecursively(elementStubPath, elementRealPath);
   });
 };
 
-resetDevopsFolder();
-generateEnvironmentDevops();
+const generateDeployment = (env) => {
+  const deploymentStubPath = resolve(stubsPath, "deployments");
+  parametersMapping["--branch"] = "{BRANCH_NAME}";
+  valuesMapping["--branch"] = env === "production" ? "main" : "release/v*";
+
+  // GITHUB ACTIONS
+  generateFilesRecursively(
+    resolve(deploymentStubPath, ".github/workflows/kubernetes-deployment.yml"),
+    resolveOrCreate(
+      currentPath,
+      ".github/workflows",
+      `kubernetes-${env}-deployment`
+    )
+  );
+
+  // INFRASTRUCTURE FOLDER
+  generateFilesRecursively(
+    resolve(deploymentStubPath, "infrastructure"),
+    resolveOrCreate(currentPath, "deployments", env, "infrastructure")
+  );
+
+  // INFRASTRUCTURE FOLDER
+  generateFilesRecursively(
+    resolve(deploymentStubPath, "kubernetes"),
+    resolveOrCreate(currentPath, "deployments", env, "kubernetes")
+  );
+
+  // DOCKER FILE
+  generateFilesRecursively(
+    resolve(deploymentStubPath, "docker"),
+    resolveOrCreate(currentPath)
+  );
+};
+
+if (commandName === "deployment") return generateDeployment(environment);
