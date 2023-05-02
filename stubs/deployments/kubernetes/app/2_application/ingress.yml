@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nuxt-in-kubernetes-application
+  namespace: app
+  annotations:
+    # (Optional): Annotations for the Ingress Controller
+    # -- ingress class is needed when traefik is not the default
+    kubernetes.io/ingress.class: traefik
+    # ---
+    # -- entrypoint and tls configurations
+    # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+    # traefik.ingress.kubernetes.io/router.tls: "true"
+    # ---
+    # -- optional middlewares
+    # traefik.ingress.kubernetes.io/router.middlewares:your-middleware@kubernetescrd
+    # ---
+  labels:
+    tier: backend
+    layer: application
+spec:
+  rules:
+  - host: "{{{{host}}}}"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nuxt-in-kubernetes-application
+            port:
+              number: 80

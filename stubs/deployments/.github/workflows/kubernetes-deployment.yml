@@ -1,0 +1,62 @@
+name: kubernetes-{{{{env}}}}-deployment
+
+on:
+  push:
+    branches:
+      - {{{{branch}}}}
+
+jobs:
+  deployment:
+    runs-on: self-hosted
+    environment: {{{{env}}}}
+    steps:
+      -
+        name: Checkout repository
+        uses: actions/checkout@v3
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push app image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile.prod
+          target: runner
+          push: true
+          tags: henrotaym/{{{{key}}}}:${{ github.sha }}
+      - 
+        name: Install and configure kubectl
+        # VERSION=$(curl --silent https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+        run: |
+          curl -LO https://dl.k8s.io/release/v${{ secrets.DIGITALOCEAN_KUBERNETES_VERSION }}/bin/linux/amd64/kubectl \
+              --progress-bar \
+              --location \
+              --remote-name
+          chmod +x kubectl
+          echo ${{ secrets.ACTION_RUNNER_USER_PASSWORD }} | sudo -S mv kubectl /usr/local/bin/
+      - 
+        name: Install doctl
+        run: |
+          echo ${{ secrets.ACTION_RUNNER_USER_PASSWORD }} | sudo -S snap install doctl
+          echo ${{ secrets.ACTION_RUNNER_USER_PASSWORD }} | sudo -S snap connect doctl:kube-config
+          mkdir doctl && touch doctl/config.yaml
+          doctl auth init -t ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -c ./doctl/config.yaml
+      -
+        name: Configure kubectl
+        run: |
+          doctl k8s cluster kubeconfig save ${{ secrets.DIGITALOCEAN_KUBERNETES_CLUSTER_ID }}
+      - 
+        name: Trigger kubernetes deployment
+        run: |
+          export APP_VERSION=${{ github.sha }}
+          kubectl apply -k kubernetes

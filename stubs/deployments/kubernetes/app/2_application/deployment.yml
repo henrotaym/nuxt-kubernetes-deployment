@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: app
+  name: nuxt-in-kubernetes-application
+  labels:
+    tier: backend
+    layer: application
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: backend
+      layer: application
+  template:
+    metadata:
+      labels:
+        tier: backend
+        layer: application
+    spec:
+      containers:
+        - name: application
+          image: henrotaym/{{{{key}}}}-app:5c4455b7fc255175cffe95a52eca1c7f6e35b2b7
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: nuxt-in-kubernetes
+            - secretRef:
+                name: nuxt-in-kubernetes
