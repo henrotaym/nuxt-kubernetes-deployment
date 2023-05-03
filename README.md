@@ -2,7 +2,7 @@
 
 ## Installation
 ```shell
-yarn add @henrotaym/nuxt-kubernetes-deployment
+yarn add @henrotaym/nuxt-kubernetes-deployment -D
 ```
 
 ## Usage
