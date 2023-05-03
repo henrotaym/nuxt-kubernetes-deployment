@@ -9,10 +9,11 @@ Mustache.tags = ["{{{{", "}}}}"];
 // Don't escape values.
 Mustache.escape = (v) => v;
 
-const createGenerator = (data: Record<string, string>) =>
+const useGenerator = (data: Record<string, string>) =>
   new Scaffold({
     data,
     render: Mustache.render,
+    backup: false,
   });
 
-export default createGenerator;
+export default useGenerator;

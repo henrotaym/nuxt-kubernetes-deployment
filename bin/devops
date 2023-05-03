@@ -1,3 +1,3 @@
-const { generate } = require("../dist");
+const { useDevops } = require("../dist");
 
-generate();
+useDevops();
