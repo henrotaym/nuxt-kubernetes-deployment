@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-export { useDevops } from "./composables";
+export { useDeploy } from "./composables";

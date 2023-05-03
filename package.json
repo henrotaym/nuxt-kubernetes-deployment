@@ -9,7 +9,7 @@
     "stubs"
   ],
   "bin": {
-    "devops": "./bin/devops"
+    "deploy": "./bin/deploy"
   },
   "scripts": {
     "build": "tsc",

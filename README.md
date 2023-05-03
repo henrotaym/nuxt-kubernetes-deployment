@@ -1,4 +1,4 @@
-# Scaffolding for kubernetes deployment
+# Scaffolding for nuxt kubernetes deployment
 
 ## Installation
 ```shell
@@ -7,9 +7,5 @@ yarn add @henrotaym/nuxt-kubernetes-deployment -D
 
 ## Usage
 ```shell
-yarn bin devops deploy \
-  --key=trustup-io-worksite-admin \
-  --cloudflareKey=xxxx-xxxx-xxxx \
-  --host=staging.admin.worksite.trustup.io \
-  --env=production
+yarn bin deploy
 ```
