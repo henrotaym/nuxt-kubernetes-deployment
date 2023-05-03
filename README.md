@@ -1,27 +1,15 @@
-# Typescript vue 3 package boilerplate 🔥
+# Scaffolding for kubernetes deployment
 
-## Initialization
+## Installation
 ```shell
-./cli bootstrap
+yarn add @henrotaym/nuxt-kubernetes-deployment
 ```
 
 ## Usage
-### Start dev server
 ```shell
-./cli start
-```
-
-### Stop dev server
-```shell
-./cli stop
-```
-
-### Yarn
-```shell
-./cli yarn install
-```
-
-### Publish versions
-```shell
-./cli version patch
+yarn bin devops deployment \
+  --key=trustup-io-worksite-admin \
+  --cloudflareKey=xxxx-xxxx-xxxx \
+  --host=staging.admin.worksite.trustup.io \
+  --env=production \
 ```

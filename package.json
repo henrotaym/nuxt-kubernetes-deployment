@@ -1,60 +1,54 @@
 {
   "name": "@henrotaym/nuxt-kubernetes-deployment",
-  "description": "Boilerplate to start a vue 3 package easily.",
-  "private": false,
-  "license": "MIT",
-  "version": "0.0.4",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "Our scaffolding for kubernetes deployment",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "stubs"
   ],
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
   "bin": {
-    "devops": "./bin/devops.js"
+    "devops": "./bin/devops"
   },
-  "types": "dist/index.d.ts",
   "scripts": {
-    "testatos": "./bin/testing",
-    "dev": "vite",
-    "build:vite": "vite build",
-    "ts": "vue-tsc",
-    "build": "yarn ts && yarn build:vite",
-    "preview": "vite preview",
-    "lint": "eslint --ext .ts,.vue --ignore-path .gitignore --fix src",
+    "build": "tsc",
+    "lint": "eslint . --fix",
     "format": "prettier --write \"src/**/*\"",
-    "prepublishOnly": "yarn lint && yarn ts",
-    "preversion": "yarn lint && yarn ts",
+    "validate": "yarn lint && yarn format",
+    "prepare": "yarn build",
+    "prepublishOnly": "yarn validate && yarn build",
+    "preversion": "yarn validate",
     "version": "yarn format && git add -A src",
     "postversion": "git push && git push --tags && npm publish"
   },
-  "dependencies": {
-    "vue": "^3.2.47"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henrotaym/nuxt-kubernetes-deployment.git"
   },
+  "author": "Henrotay Mathieu <mathieu.henrotay@gmail.be>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/henrotaym/nuxt-kubernetes-deployment/issues"
+  },
+  "homepage": "https://github.com/henrotaym/nuxt-kubernetes-deployment#readme",
   "devDependencies": {
-    "@types/node": "^18.15.11",
-    "@typescript-eslint/eslint-plugin": "^5.58.0",
-    "@typescript-eslint/parser": "^5.58.0",
-    "@vitejs/plugin-vue": "^4.1.0",
-    "autoprefixer": "^10.4.14",
-    "eslint": "^8.38.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-vue": "^9.11.0",
-    "postcss": "^8.4.23",
-    "prettier": "^2.8.7",
-    "tailwindcss": "^3.3.1",
-    "typescript": "^4.9.3",
-    "vite": "^4.2.0",
-    "vite-plugin-dts": "^2.3.0",
-    "vite-plugin-eslint": "^1.8.1",
-    "vue-tsc": "^1.2.0"
+    "@types/mustache": "^4.2.2",
+    "@types/node": "^18.16.3",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "mustache": "^4.2.0",
+    "scaffold-generator": "^3.0.5"
   }
 }
