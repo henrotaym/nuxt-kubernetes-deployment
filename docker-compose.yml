@@ -6,5 +6,5 @@ services:
       target: runner
     volumes:
       - ./:/app
-    ports:
-      - ${VITE_PORT:-8000}:${VITE_PORT:-8000}
+    # ports:
+      # - ${VITE_PORT:-8000}:${VITE_PORT:-8000}

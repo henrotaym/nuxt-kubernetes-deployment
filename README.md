@@ -7,9 +7,9 @@ yarn add @henrotaym/nuxt-kubernetes-deployment
 
 ## Usage
 ```shell
-yarn bin devops deployment \
+yarn bin devops deploy \
   --key=trustup-io-worksite-admin \
   --cloudflareKey=xxxx-xxxx-xxxx \
   --host=staging.admin.worksite.trustup.io \
-  --env=production \
+  --env=production
 ```
