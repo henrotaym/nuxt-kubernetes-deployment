@@ -1,6 +1,6 @@
 {
   "name": "@henrotaym/nuxt-kubernetes-deployment",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Our scaffolding for kubernetes deployment",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
