@@ -4,6 +4,13 @@ import { resolve } from "path";
 import useCurrentPath from "./useCurrentPath";
 
 const useStubsPath = (...paths: string[]) =>
-  resolve(useCurrentPath(), "stubs", ...paths);
+  resolve(
+    useCurrentPath(),
+    "node_modules",
+    "@henrotaym",
+    "nuxt-kubernetes-deployment",
+    "stubs",
+    ...paths
+  );
 
 export default useStubsPath;

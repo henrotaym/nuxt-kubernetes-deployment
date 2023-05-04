@@ -9,9 +9,10 @@ Mustache.tags = ["{{{{", "}}}}"];
 // Don't escape values.
 Mustache.escape = (v) => v;
 
+// Add gitignore to interpolation data.
 const useGenerator = (data: Record<string, string>) =>
   new Scaffold({
-    data,
+    data: { ...data, gitignore: ".gitignore" },
     render: Mustache.render,
     backup: false,
   });
